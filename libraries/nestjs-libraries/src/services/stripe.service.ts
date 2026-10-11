@@ -260,7 +260,7 @@ export class StripeService extends PaymentProviderAbstract {
   // now owns it. Owner-only so a member's switch can't rewrite a shared org's
   // billing email, deduped per customer, and skipping admin-granted
   // subscriptions (their paymentId is a user id, not a `cus_...` customer).
-  async syncCustomerEmailsAfterSwitch(
+  override async syncCustomerEmailsAfterSwitch(
     accounts: { id: string; email: string }[]
   ) {
     if (!process.env.STRIPE_PUBLISHABLE_KEY) {
@@ -312,7 +312,7 @@ export class StripeService extends PaymentProviderAbstract {
     return customer.id;
   }
 
-  async getPackages() {
+  override async getPackages() {
     const products = await stripe.prices.list({
       active: true,
       expand: ['data.tiers', 'data.product'],
@@ -336,7 +336,7 @@ export class StripeService extends PaymentProviderAbstract {
     return { ...productsList };
   }
 
-  async prorate(organizationId: string, body: BillingSubscribeDto) {
+  override async prorate(organizationId: string, body: BillingSubscribeDto) {
     const org = await this._organizationService.getOrgById(organizationId);
     const customer = await this.createOrGetCustomer(org!);
     const priceData = pricing[body.billing];
@@ -447,7 +447,7 @@ export class StripeService extends PaymentProviderAbstract {
     );
   }
 
-  async setToCancel(organizationId: string) {
+  override async setToCancel(organizationId: string) {
     const id = makeId(10);
     const org = await this._organizationService.getOrgById(organizationId);
     const customer = await this.createOrGetCustomer(org!);
@@ -519,7 +519,7 @@ export class StripeService extends PaymentProviderAbstract {
     };
   }
 
-  async cancelAllSubscriptions(organizationId: string) {
+  override async cancelAllSubscriptions(organizationId: string) {
     if (!process.env.STRIPE_PUBLISHABLE_KEY) {
       return;
     }
@@ -737,12 +737,12 @@ export class StripeService extends PaymentProviderAbstract {
     return { url };
   }
 
-  async portalLink(organizationId: string) {
+  override async portalLink(organizationId: string) {
     const customer = await this.getCustomerByOrganizationId(organizationId);
     return this.createBillingPortalLink(customer);
   }
 
-  async getInvoices(organizationId: string): Promise<PaymentInvoice[]> {
+  override async getInvoices(organizationId: string): Promise<PaymentInvoice[]> {
     const customer = await this.getCustomerByOrganizationId(organizationId);
     if (!customer || !customer.startsWith('cus_')) {
       return [];
@@ -786,7 +786,7 @@ export class StripeService extends PaymentProviderAbstract {
       });
   }
 
-  async finishTrial(organization: Organization) {
+  override async finishTrial(organization: Organization) {
     const list = (
       await stripe.subscriptions.list({
         customer: organization.paymentId,
@@ -798,7 +798,7 @@ export class StripeService extends PaymentProviderAbstract {
     });
   }
 
-  async checkDiscount(organization: Organization) {
+  override async checkDiscount(organization: Organization) {
     const customer = organization.paymentId;
     if (!process.env.STRIPE_DISCOUNT_ID || !customer) {
       return false;
@@ -838,7 +838,7 @@ export class StripeService extends PaymentProviderAbstract {
     return true;
   }
 
-  async applyDiscount(organization: Organization) {
+  override async applyDiscount(organization: Organization) {
     const customer = organization.paymentId;
     const check = this.checkDiscount(organization);
     if (!check) {
@@ -866,7 +866,7 @@ export class StripeService extends PaymentProviderAbstract {
     return true;
   }
 
-  async checkSubscription(organizationId: string, subscriptionId: string) {
+  override async checkSubscription(organizationId: string, subscriptionId: string) {
     const orgValue = await this._subscriptionService.checkSubscription(
       organizationId,
       subscriptionId
@@ -894,7 +894,7 @@ export class StripeService extends PaymentProviderAbstract {
     return 0;
   }
 
-  async embedded(
+  override async embedded(
     uniqueId: string,
     organizationId: string,
     userId: string,
@@ -963,7 +963,7 @@ export class StripeService extends PaymentProviderAbstract {
     );
   }
 
-  async subscribe(
+  override async subscribe(
     uniqueId: string,
     organizationId: string,
     userId: string,
@@ -1093,7 +1093,7 @@ export class StripeService extends PaymentProviderAbstract {
     return { ok: true };
   }
 
-  async getCharges(organizationId: string) {
+  override async getCharges(organizationId: string) {
     const org = await this._organizationService.getOrgById(organizationId);
     if (!org?.paymentId) {
       return [];
@@ -1144,7 +1144,7 @@ export class StripeService extends PaymentProviderAbstract {
     }));
   }
 
-  async refundCharges(organizationId: string, chargeIds: string[]) {
+  override async refundCharges(organizationId: string, chargeIds: string[]) {
     const org = await this._organizationService.getOrgById(organizationId);
     if (!org?.paymentId) {
       throw new Error('No payment customer found for this organization');
@@ -1165,7 +1165,7 @@ export class StripeService extends PaymentProviderAbstract {
     return { refunded, failed };
   }
 
-  async cancelSubscription(organizationId: string) {
+  override async cancelSubscription(organizationId: string) {
     const org = await this._organizationService.getOrgById(organizationId);
     if (!org?.paymentId) {
       throw new Error('No payment customer found for this organization');
@@ -1231,7 +1231,7 @@ export class StripeService extends PaymentProviderAbstract {
     ).data.find((f) => f.status === 'active' || f.status === 'trialing');
   }
 
-  async getCouponInfo(organizationId: string) {
+  override async getCouponInfo(organizationId: string) {
     const org = await this._organizationService.getOrgById(organizationId);
     const subscription =
       await this._subscriptionService.getSubscriptionByOrganizationId(
@@ -1281,7 +1281,7 @@ export class StripeService extends PaymentProviderAbstract {
     };
   }
 
-  async applyCoupon(
+  override async applyCoupon(
     organizationId: string,
     body: { type: string; value: number; months: number }
   ) {
@@ -1335,7 +1335,7 @@ export class StripeService extends PaymentProviderAbstract {
     return { applied: true };
   }
 
-  async cancelCoupon(organizationId: string) {
+  override async cancelCoupon(organizationId: string) {
     const org = await this._organizationService.getOrgById(organizationId);
     const stripeSubscription = await this.getActiveStripeSubscription(
       org?.paymentId
@@ -1360,7 +1360,7 @@ export class StripeService extends PaymentProviderAbstract {
     return { cancelled: true };
   }
 
-  async chatbaseRefundPreview(organizationId: string) {
+  override async chatbaseRefundPreview(organizationId: string) {
     const org = await this._organizationService.getOrgById(organizationId);
     if (!org?.paymentId) {
       return {
@@ -1471,7 +1471,7 @@ export class StripeService extends PaymentProviderAbstract {
     };
   }
 
-  async chatbaseRefund(organizationId: string) {
+  override async chatbaseRefund(organizationId: string) {
     const preview = await this.chatbaseRefundPreview(organizationId);
     if (!preview.eligible) {
       return {
@@ -1510,7 +1510,7 @@ export class StripeService extends PaymentProviderAbstract {
     };
   }
 
-  async lifetimeDeal(organizationId: string, code: string) {
+  override async lifetimeDeal(organizationId: string, code: string) {
     const getCurrentSubscription =
       await this._subscriptionService.getSubscriptionByOrganizationId(
         organizationId

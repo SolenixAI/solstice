@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Runs before each commit. No secret may be staged, and each package with staged changes must typecheck.
+# Needs gitleaks (brew install gitleaks). Git uses this hook after pnpm install (the prepare script sets core.hooksPath).
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "gitleaks is not installed. Install it with: brew install gitleaks"
+  exit 1
+fi
+
+if ! gitleaks git --pre-commit --staged --no-banner --redact --exit-code 1; then
+  echo "a secret is staged for commit. Remove it from the commit, then commit again."
+  exit 1
+fi
+
+if ! bash scripts/typecheck.sh --changed; then
+  echo "typecheck failed: fix the errors above, then commit again."
+  exit 1
+fi

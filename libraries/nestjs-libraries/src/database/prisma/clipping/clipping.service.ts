@@ -887,7 +887,7 @@ export class ClippingService {
     const clip = await this._clippingRepository.getClipById(clipId);
     // the first reason is the specific one (what the media service answered)
     if (!clip || clip.status !== 'pending') {
-      return;
+      return undefined;
     }
 
     if (!customer) {
@@ -1004,7 +1004,7 @@ export class ClippingService {
   async finishClipping(clippingId: string) {
     const clipping = await this._clippingRepository.getClippingById(clippingId);
     if (!clipping) {
-      return;
+      return undefined;
     }
 
     if (!clipping.clips.some((clip) => clip.status === 'completed')) {
@@ -1030,7 +1030,7 @@ export class ClippingService {
   async failClipping(clippingId: string, error: string, customer = false) {
     const clipping = await this._clippingRepository.getClippingById(clippingId);
     if (!clipping) {
-      return;
+      return undefined;
     }
 
     if (!customer) {

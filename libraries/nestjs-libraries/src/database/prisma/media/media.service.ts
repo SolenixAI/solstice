@@ -446,7 +446,7 @@ export class MediaService {
   async failProcessing(mediaId: string, error: string) {
     const media = await this._mediaRepository.getMediaById(mediaId);
     if (!media) {
-      return;
+      return undefined;
     }
 
     return this._mediaRepository.finishProcessing(

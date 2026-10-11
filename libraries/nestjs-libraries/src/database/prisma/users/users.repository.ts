@@ -180,7 +180,7 @@ export class UsersRepository {
     });
 
     if (!user || user.deletedAt) {
-      return;
+      return undefined;
     }
 
     const hash = (value: string) =>

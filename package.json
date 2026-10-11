@@ -37,6 +37,9 @@
     "docker-build": "./var/docker/docker-build.sh",
     "docker-create": "./var/docker/docker-create.sh",
     "postinstall": "pnpm run prisma-generate",
+    "typecheck": "bash scripts/typecheck.sh",
+    "lint": "eslint .",
+    "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true",
     "test": "jest --coverage --detectOpenHandles --reporters=default --reporters=jest-junit"
   },
   "dependencies": {
@@ -318,7 +321,7 @@
     "vitest": "3.1.4"
   },
   "volta": {
-    "node": "20.17.0"
+    "node": "22.12.0"
   },
   "jest-junit": {
     "outputDirectory": "./reports",

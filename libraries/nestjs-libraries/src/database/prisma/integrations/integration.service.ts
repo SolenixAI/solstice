@@ -277,7 +277,7 @@ export class IntegrationService {
       !sources.length ||
       this._integrationManager.getSocialIntegration(newProvider).isBetweenSteps
     ) {
-      return;
+      return undefined;
     }
 
     // the account already exists on the new provider: the normal upsert
@@ -285,7 +285,7 @@ export class IntegrationService {
     if (
       await this._integrationRepository.getIntegrationByInternalId(org, auth.id)
     ) {
-      return;
+      return undefined;
     }
 
     const existing = (
@@ -299,7 +299,7 @@ export class IntegrationService {
     );
 
     if (!existing) {
-      return;
+      return undefined;
     }
 
     return this._integrationRepository.migrateIntegration(
