@@ -1,5 +1,9 @@
-const { join } = require('path');
-module.exports = {
+import tailwindScrollbar from 'tailwind-scrollbar';
+// tailwindcss-rtl ships no type declarations.
+// @ts-expect-error tailwindcss-rtl has no types
+import tailwindcssRtl from 'tailwindcss-rtl';
+
+const config = {
   darkMode: 'class',
   content: ['./src/**/*.{ts,tsx,html}', '../../libraries/**/*.{ts,tsx,html}'],
   theme: {
@@ -152,7 +156,7 @@ module.exports = {
         ],
       },
       // that is actual animation
-      keyframes: (theme) => ({
+      keyframes: () => ({
         fadeOut: {
           '0%': {
             opacity: 0,
@@ -274,11 +278,13 @@ module.exports = {
     },
   },
   plugins: [
-    require('tailwind-scrollbar'),
-    require('tailwindcss-rtl'),
-    function ({ addVariant }) {
+    tailwindScrollbar,
+    tailwindcssRtl,
+    function ({ addVariant }: { addVariant: (name: string, variant: string) => void }) {
       addVariant('child', '& > *');
       addVariant('child-hover', '& > *:hover');
     },
   ],
 };
+
+export default config;
