@@ -28,11 +28,11 @@ export class WaitForMediaProcessing extends BasePlugin<any, any, any> {
     this.type = 'modifier';
   }
 
-  install() {
+  override install() {
     this.uppy.addPostProcessor(this.process);
   }
 
-  uninstall() {
+  override uninstall() {
     this.uppy.removePostProcessor(this.process);
   }
 

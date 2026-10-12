@@ -26,6 +26,8 @@ const eslintConfig = [
       '**/out/**',
       '**/build/**',
       '**/next-env.d.ts',
+      // Vendored Facebook SDK, served as-is from public/ (src/components/layout/facebook.component.tsx).
+      'apps/frontend/public/f.js',
     ],
   },
 ];

@@ -19,8 +19,6 @@
   },
   "include": [
     "src",
-    "utils",
-    "vite.config.base.ts",
-    "vite.config.chrome.ts"
+    "utils"
   ]
 }

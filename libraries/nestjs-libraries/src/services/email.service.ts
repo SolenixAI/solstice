@@ -43,7 +43,7 @@ export class EmailService {
     replyTo?: string
   ) {
     if (!to || !subject) {
-      return;
+      return undefined;
     }
 
     return this._temporalService.client
