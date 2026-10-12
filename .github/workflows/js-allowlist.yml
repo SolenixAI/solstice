@@ -1,0 +1,22 @@
+name: JavaScript allowlist
+
+on:
+  push:
+  merge_group:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: TypeScript only
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Check JavaScript files against scripts/js-allowlist.txt
+        run: bash scripts/check.sh

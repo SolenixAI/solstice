@@ -1,0 +1,13 @@
+# JavaScript files that may stay in this repo. Everything else is TypeScript.
+# scripts/check.sh fails on any .js, .mjs or .cjs file that this list does not name.
+# The list may only shrink: delete a line when its file becomes TypeScript.
+#
+# Why each file is still JavaScript:
+#   apps/frontend/public/f.js: vendored Facebook SDK, served as-is from public/ (loaded as /f.js by src/components/layout/facebook.component.tsx).
+#   eslint.config.mjs: ESLint 8.57 loads only .js, .mjs and .cjs flat configs, so an eslint.config.ts is not found.
+#   apps/frontend/eslint.config.mjs: same reason as eslint.config.mjs.
+#   jest.preset.js: requires @nx/jest, which package.json does not install. Delete it when Jest is set up.
+apps/frontend/public/f.js
+eslint.config.mjs
+apps/frontend/eslint.config.mjs
+jest.preset.js
